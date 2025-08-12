@@ -1,6 +1,8 @@
 import {Module} from "@nestjs/common";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import BlogModule from "./blog/blog.module";
+import AuthModule from "./modules/auth/auth.module";
+import BlogModule from "./modules/blog/blog.module";
+import UserModule from "./modules/user/user.module";
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import BlogModule from "./blog/blog.module";
       entities: [],
     }),
     BlogModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
