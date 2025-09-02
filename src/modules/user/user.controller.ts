@@ -1,12 +1,10 @@
-import {Controller, Get, Req, UseGuards} from "@nestjs/common";
-import {ApiBearerAuth} from "@nestjs/swagger";
+import {Controller, Get, Req} from "@nestjs/common";
 import {Request} from "express";
-import AuthGuard from "../auth/guard/auth.guard";
+import CheckAuth from "src/common/decorators/auth.decorator";
 import UserService from "./user.service";
 
 @Controller("user")
-@ApiBearerAuth("Authorization")
-@UseGuards(AuthGuard)
+@CheckAuth()
 export default class UserController {
   constructor(private userService: UserService) {}
 

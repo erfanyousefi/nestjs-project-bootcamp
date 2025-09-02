@@ -1,15 +1,23 @@
-import {Injectable, NotFoundException} from "@nestjs/common";
+import {Inject, Injectable, NotFoundException, Scope} from "@nestjs/common";
+import {REQUEST} from "@nestjs/core";
 import {InjectRepository} from "@nestjs/typeorm";
+import {Request} from "express";
 import {FindOptionsWhere, ILike, Repository} from "typeorm";
 import CreateBlogDto from "./dto/create.dto";
 import PaginationDto from "./dto/pagination.dto";
 import UpdateBlogDto from "./dto/update.dto";
 import Blog from "./entity/blog.entity";
+import {BlogBookmark} from "./entity/bookmark.entity";
+import {BlogLike} from "./entity/like.entity";
 
-@Injectable()
+@Injectable({scope: Scope.REQUEST})
 export default class BlogService {
   constructor(
-    @InjectRepository(Blog) private blogRepository: Repository<Blog>
+    @InjectRepository(Blog) private blogRepository: Repository<Blog>,
+    @InjectRepository(BlogLike) private likeRepository: Repository<BlogLike>,
+    @InjectRepository(BlogBookmark)
+    private bookmarkRepository: Repository<BlogBookmark>,
+    @Inject(REQUEST) private request: Request
   ) {}
   async find(paginationDto: PaginationDto, search?: string) {
     const {limit = 10, page = 1} = paginationDto;
@@ -74,5 +82,37 @@ export default class BlogService {
     return {
       message: "deleted blog successfully",
     };
+  }
+  async likeToggle(blogId: number) {
+    const {id: userId} = this.request.user;
+    await this.findOne(blogId);
+    const liked = await this.likeRepository.findOneBy({userId, blogId});
+    if (liked) {
+      await this.likeRepository.remove(liked);
+      return {
+        message: "blog unlike successfully",
+      };
+    } else {
+      await this.likeRepository.insert({userId, blogId});
+      return {
+        message: "blog liked successfully",
+      };
+    }
+  }
+  async bookmarkToggle(blogId: number) {
+    const {id: userId} = this.request.user;
+    await this.findOne(blogId);
+    const liked = await this.bookmarkRepository.findOneBy({userId, blogId});
+    if (liked) {
+      await this.bookmarkRepository.remove(liked);
+      return {
+        message: "remove in bookmark list",
+      };
+    } else {
+      await this.bookmarkRepository.insert({userId, blogId});
+      return {
+        message: "added to bookmark list",
+      };
+    }
   }
 }
