@@ -113,7 +113,10 @@ export default class AuthService {
       secret: JwtConstant.secret,
     });
     if (payload?.id) {
-      const user = await this.userRepository.findOneBy({id: payload.id});
+      const user = await this.userRepository.findOne({
+        where: {id: payload.id},
+        relations: {role: {permissions: {permission: true}}},
+      });
       if (!user) throw new UnauthorizedException("not found user account");
       return {
         id: user.id,
@@ -121,6 +124,9 @@ export default class AuthService {
         firstname: user.firstname,
         lastname: user.lastname,
         mobile: user.mobile,
+        permissions: user?.role?.permissions.map(
+          (p) => `${p.permission.group}.${p.permission.title}`
+        ),
       };
     }
     throw new UnauthorizedException("not found user account");

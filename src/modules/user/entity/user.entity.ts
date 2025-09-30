@@ -1,7 +1,9 @@
+import {Role} from "src/modules/RBAC/entity/role.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -27,6 +29,13 @@ export default class User {
   wrong_count: number;
   @Column({nullable: true, default: 0})
   reset_password_count: number;
+  @Column({nullable: true})
+  roleId: number;
+  @ManyToOne(() => Role, (role) => role.users, {
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
+  role: Role;
   @CreateDateColumn()
   created_at: Date;
 }

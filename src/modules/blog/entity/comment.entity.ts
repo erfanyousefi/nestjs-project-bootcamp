@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import Blog from "./blog.entity";
 
 @Entity("blog_comment")
 export class BlogComment {
@@ -19,4 +21,9 @@ export class BlogComment {
   accepted: boolean;
   @CreateDateColumn()
   created_at: Date;
+  @ManyToOne(() => Blog, (blog) => blog.comments, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  blog: Blog;
 }

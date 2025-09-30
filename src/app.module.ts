@@ -2,6 +2,7 @@ import {Module} from "@nestjs/common";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import AuthModule from "./modules/auth/auth.module";
 import BlogModule from "./modules/blog/blog.module";
+import {RbacModule} from "./modules/RBAC/rbac.module";
 import UserModule from "./modules/user/user.module";
 
 @Module({
@@ -20,6 +21,7 @@ import UserModule from "./modules/user/user.module";
     BlogModule,
     UserModule,
     AuthModule,
+    RbacModule,
   ],
   controllers: [],
   providers: [],

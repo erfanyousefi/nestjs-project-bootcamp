@@ -4,7 +4,10 @@ import {DeepPartial} from "typeorm";
 declare global {
   namespace Express {
     interface Request {
-      user?: Omit<DeepPartial<User>, "password" | "otp_code" | "otp_expires">;
+      user?: Omit<
+        DeepPartial<User>,
+        "password" | "otp_code" | "otp_expires"
+      > & {permissions?: string[]};
     }
   }
 }
